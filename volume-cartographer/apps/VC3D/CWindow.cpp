@@ -65,6 +65,7 @@
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
 #include <QDockWidget>
+#include <QToolBar>
 #include <QLabel>
 #include <QLineEdit>
 #include <QDoubleSpinBox>
@@ -3089,7 +3090,11 @@ CWindow::CWindow(size_t cacheSizeGB, RenderBenchOptions benchOptions) :
                                   ui.dockWidgetOverlay,
                                   ui.dockWidgetRenderSettings,
                                   ui.dockWidgetComposite,
-                                  ui.dockWidgetDistanceTransform}) {
+                                  ui.dockWidgetDistanceTransform,
+                                  ui.dockWidgetVolumes,
+                                  ui.dockWidgetSegmentation,
+                                  ui.dockWidgetViewerControls,
+                                  ui.dockWidgetView}) {
             if (dock) {
                 dock->hide();
             }
@@ -3098,6 +3103,8 @@ CWindow::CWindow(size_t cacheSizeGB, RenderBenchOptions benchOptions) :
         _segmentWorkspaceWindow->resizeDocks({ui.dockWidgetVolumes}, {400}, Qt::Vertical);
         _segmentWorkspaceWindow->resizeDocks({ui.dockWidgetSegmentation}, {350}, Qt::Horizontal);
     }
+
+    setupPanelSidebar();
 
     if (_workspaceTabs) {
         int workspaceIndex = -1;
@@ -11448,4 +11455,42 @@ void CWindow::onFiberAnnotationFinished(uint64_t fiberId)
     if (_fiberSliceWidget) {
         _fiberSliceWidget->selectFiber(fiberId);
     }
+}
+
+void CWindow::setupPanelSidebar()
+{
+    auto* sidebar = new QToolBar(tr("Panels"), this);
+    sidebar->setObjectName("panelSidebar");
+    sidebar->setOrientation(Qt::Vertical);
+    sidebar->setMovable(false);
+    sidebar->setFloatable(false);
+    sidebar->setIconSize(QSize(24, 24));
+    sidebar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+    auto addPanelButton = [this, sidebar](const QString& label, QDockWidget* dock) {
+        if (!dock) {
+            return;
+        }
+        auto* act = new QAction(label, this);
+        act->setCheckable(true);
+        act->setChecked(dock->isVisible());
+        connect(act, &QAction::toggled, this, [dock](bool on) {
+            dock->setVisible(on);
+            if (on) {
+                dock->raise();
+            }
+        });
+        connect(dock, &QDockWidget::visibilityChanged, act, [act](bool vis) {
+            act->blockSignals(true);
+            act->setChecked(vis);
+            act->blockSignals(false);
+        });
+        sidebar->addAction(act);
+    };
+
+    addPanelButton(tr("Project"), ui.dockWidgetVolumes);
+    addPanelButton(tr("Segment"), ui.dockWidgetSegmentation);
+    addPanelButton(tr("View"), ui.dockWidgetViewerControls);
+    addPanelButton(tr("Display"), ui.dockWidgetView);
+    addToolBar(Qt::LeftToolBarArea, sidebar);
 }

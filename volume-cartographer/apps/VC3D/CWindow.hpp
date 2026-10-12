@@ -199,6 +199,7 @@ public:
     bool openProjectDialog();
     bool newProjectDialog();
     void showOpenDataCatalog();
+    void setupPanelSidebar();
 
     // Helper method to get the current volume path
     QString getCurrentVolumePath() const;
