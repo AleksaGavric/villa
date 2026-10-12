@@ -11510,7 +11510,12 @@ void CWindow::setupPanelSidebar()
         auto* act = new QAction(label, this);
         act->setCheckable(true);
         act->setChecked(dock->isVisible());
-        connect(act, &QAction::toggled, this, [dock](bool on) {
+        connect(act, &QAction::toggled, this, [this, dock](bool on) {
+            if (on) {
+                // Dock to the right as an inspector panel (Apple-like)
+                addDockWidget(Qt::RightDockWidgetArea, dock);
+                dock->setFloating(false);
+            }
             dock->setVisible(on);
             if (on) {
                 dock->raise();
