@@ -9638,6 +9638,22 @@ void CWindow::refreshVolumeSelectionUi(const QString& preferredVolumeId)
     }
 }
 
+bool CWindow::openProjectDialog()
+{
+    if (_menuController) {
+        _menuController->openVolpkg();
+    }
+    return _state && _state->hasVpkg();
+}
+
+bool CWindow::newProjectDialog()
+{
+    if (_menuController) {
+        _menuController->newProject();
+    }
+    return _state && _state->hasVpkg();
+}
+
 void CWindow::CloseVolume(void)
 {
     if (_fileWatcher) {

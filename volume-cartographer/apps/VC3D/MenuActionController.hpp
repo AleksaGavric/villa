@@ -52,6 +52,9 @@ public:
     bool openVolpkgAt(const QString& path,
                       bool interactive = true,
                       QString* errorMessage = nullptr);
+    // Project actions also reachable from the welcome screen.
+    void newProject();
+    void openVolpkg();
     void showOpenDataCatalog();
     bool isOpenDataCatalogVisible() const;
     // Resolves sampleId against the cached manifest and opens it. When
@@ -93,7 +96,6 @@ public:
     bool openDataSampleOpenInFlight() const;
 
 private slots:
-    void newProject();
     void saveProjectAs();
     void attachVolume();
     void attachSegments();
@@ -105,7 +107,6 @@ private slots:
     void detachEntry();
     void setOutputSegments();
     void convertLegacyVolpkg();
-    void openVolpkg();
     void openRecentVolpkg();
     void attachRemoteZarr();
     void showSettingsDialog();

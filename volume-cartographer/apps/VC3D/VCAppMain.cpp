@@ -10,9 +10,11 @@
 #include <QCommandLineParser>
 #include <QComboBox>
 #include <QEvent>
+#include <QFile>
 #include <QImageReader>
 
 #include "CWindow.hpp"
+#include "WelcomeDialog.hpp"
 #include "agent_bridge/AgentBridgeServer.hpp"
 #include "VCSettings.hpp"
 #include "vc/core/Version.hpp"
@@ -334,6 +336,16 @@ auto main(int argc, char* argv[]) -> int
     QApplication::setWindowIcon(QIcon(":/images/logo.png"));
     QApplication::setApplicationVersion(QString::fromStdString(ProjectInfo::VersionString()));
 
+    // Modern theme, applied once application-wide. If the resource is
+    // missing (e.g. a partial build), fall back to the platform style
+    // silently rather than breaking startup.
+    {
+        QFile themeFile(QStringLiteral(":/themes/vc3d-modern.qss"));
+        if (themeFile.open(QIODevice::ReadOnly)) {
+            app.setStyleSheet(QString::fromUtf8(themeFile.readAll()));
+        }
+    }
+
     // Handle this before constructing the main window. QCommandLineParser's
     // built-in version option normally exits from process(), but keeping the
     // probe explicit makes the packaged GUI-subsystem executable a reliable
@@ -577,6 +589,10 @@ auto main(int argc, char* argv[]) -> int
         }
         CWindow aWin(cacheSizeGB, benchOptions);
 
+        // Show the window before the (potentially slow) volume load so the
+        // app appears immediately instead of sitting on a dead process.
+        aWin.show();
+
         if (parser.isSet(volumePackageOption)) {
             QString errorMessage;
             if (!aWin.openVolumePackage(parser.value(volumePackageOption).trimmed(),
@@ -622,7 +638,12 @@ auto main(int argc, char* argv[]) -> int
             std::cout.flush();
         }
 
-        aWin.show();
+        // Welcome screen when no project was opened from the command line.
+        if (!parser.isSet(volumePackageOption)) {
+            WelcomeDialog welcome(&aWin);
+            welcome.exec();
+        }
+
         rc = QApplication::exec();
     }
     saveAdaptiveDownloadState(chunkCacheService->adaptiveDownloadState());

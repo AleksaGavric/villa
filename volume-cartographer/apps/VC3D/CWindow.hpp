@@ -194,6 +194,11 @@ public:
                            const QString& preferredVolumeId = {},
                            VolumeOpenError* openError = nullptr);
 
+    // Dialog-driven project actions for the welcome screen. Each returns
+    // true when a project is open afterwards.
+    bool openProjectDialog();
+    bool newProjectDialog();
+
     // Helper method to get the current volume path
     QString getCurrentVolumePath() const;
     VCCollection* pointCollection() { return _state->pointCollection(); }

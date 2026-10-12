@@ -97,6 +97,8 @@ set(srcs
     VolumeViewerCmaps.hpp
     WindowRangeWidget.cpp
     WindowRangeWidget.hpp
+    WelcomeDialog.cpp
+    WelcomeDialog.hpp
     WrapAnnotationWidget.cpp
     WrapAnnotationWidget.hpp
     elements/CollapsibleSettingsGroup.cpp

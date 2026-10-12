@@ -2,4 +2,9 @@
     <qresource prefix="/images">
         <file>logo.png</file>
     </qresource>
+    <qresource prefix="/">
+        <file>themes/vc3d-modern.qss</file>
+        <file>themes/icons/chevron-down.png</file>
+        <file>themes/icons/check.png</file>
+    </qresource>
 </RCC>
