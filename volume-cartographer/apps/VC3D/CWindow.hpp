@@ -198,6 +198,7 @@ public:
     // true when a project is open afterwards.
     bool openProjectDialog();
     bool newProjectDialog();
+    void showOpenDataCatalog();
 
     // Helper method to get the current volume path
     QString getCurrentVolumePath() const;

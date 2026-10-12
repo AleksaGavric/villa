@@ -587,6 +587,14 @@ auto main(int argc, char* argv[]) -> int
             chunkCacheService->configureFetchConcurrency(
                 fixedDownloadParallelism, false);
         }
+        // Suppress the auto-show open-data catalog when the welcome screen
+        // will be shown; the welcome dialog is the single entry point
+        // (catalog remains available via File menu and the welcome dialog).
+        if (!parser.isSet(volumePackageOption)) {
+            QSettings settings(vc3d::settingsFilePath(), QSettings::IniFormat);
+            settings.setValue(vc3d::settings::project::SHOW_OPEN_DATA_CATALOG_ON_STARTUP, false);
+        }
+
         CWindow aWin(cacheSizeGB, benchOptions);
 
         // Show the window before the (potentially slow) volume load so the

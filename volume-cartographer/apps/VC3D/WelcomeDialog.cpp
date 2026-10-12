@@ -69,6 +69,14 @@ WelcomeDialog::WelcomeDialog(CWindow* window, QWidget* parent)
     });
     layout->addWidget(openBtn);
 
+    auto* catalogBtn = new QPushButton(tr("Browse Open Data…"), this);
+    catalogBtn->setMinimumHeight(40);
+    connect(catalogBtn, &QPushButton::clicked, this, [this]() {
+        _window->showOpenDataCatalog();
+        accept();
+    });
+    layout->addWidget(catalogBtn);
+
     layout->addSpacing(8);
 
     auto* recentLabel = new QLabel(tr("Recent Projects"), this);
