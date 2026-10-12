@@ -135,6 +135,8 @@ set(srcs
     segmentation/SegmentationCommon.hpp
     segmentation/SegmentationWidget.cpp
     segmentation/SegmentationWidget.hpp
+    segmentation/CollapsibleSection.cpp
+    segmentation/CollapsibleSection.hpp
     segmentation/panels/SegmentationHeaderRow.cpp
     segmentation/panels/SegmentationHeaderRow.hpp
     segmentation/panels/SegmentationEditingPanel.cpp

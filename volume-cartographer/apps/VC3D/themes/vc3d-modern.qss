@@ -450,3 +450,23 @@ QToolButton:checked {
     background-color: #0A84FF;
     color: #FFFFFF;
 }
+
+/* ---------- collapsible workflow sections ---------- */
+QToolButton[sectionHeader="true"] {
+    background-color: #2C2C2E;
+    color: #F2F2F7;
+    border: 1px solid #3A3A3C;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-weight: 600;
+    font-size: 13px;
+    text-align: left;
+}
+QToolButton[sectionHeader="true"]:hover {
+    background-color: #3A3A3C;
+}
+QToolButton[sectionHeader="true"]:checked {
+    background-color: rgba(10, 132, 255, 0.18);
+    border-color: #0A84FF;
+    color: #FFFFFF;
+}

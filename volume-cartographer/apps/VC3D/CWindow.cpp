@@ -3102,6 +3102,18 @@ CWindow::CWindow(size_t cacheSizeGB, RenderBenchOptions benchOptions) :
     }
     if (!restoredState) {
         // No saved state - set sensible default sizes for dock widgets
+        // Progressive disclosure: advanced docks stay hidden until the user
+        // opens them from the View menu. Only re-applied on first run; the
+        // saved layout wins afterwards.
+        for (QDockWidget* dock : {ui.dockWidgetNormalVis,
+                                  ui.dockWidgetOverlay,
+                                  ui.dockWidgetRenderSettings,
+                                  ui.dockWidgetComposite,
+                                  ui.dockWidgetDistanceTransform}) {
+            if (dock) {
+                dock->hide();
+            }
+        }
         _segmentWorkspaceWindow->resizeDocks({ui.dockWidgetVolumes}, {300}, Qt::Horizontal);
         _segmentWorkspaceWindow->resizeDocks({ui.dockWidgetVolumes}, {400}, Qt::Vertical);
         _segmentWorkspaceWindow->resizeDocks({ui.dockWidgetSegmentation}, {350}, Qt::Horizontal);

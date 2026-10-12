@@ -14,6 +14,7 @@
 #include "VCSettings.hpp"
 
 #include <QSettings>
+#include "CollapsibleSection.hpp"
 #include <QVBoxLayout>
 #include <QVariant>
 
@@ -38,33 +39,36 @@ void SegmentationWidget::buildUi()
     _headerRow = new SegmentationHeaderRow(this);
     layout->addWidget(_headerRow);
 
-    _growthPanel = new SegmentationGrowthPanel(QStringLiteral("segmentation_edit"), this);
-    layout->addWidget(_growthPanel);
+    // Guided workflow: Grow -> Refine -> Advanced. Disclosure sections keep
+    // the panel focused; advanced tools stay tucked away until needed.
+    auto* growSection = new CollapsibleSection(tr("Grow"), this, true);
+    _growthPanel = new SegmentationGrowthPanel(QStringLiteral("segmentation_edit"), growSection);
+    growSection->contentLayout()->addWidget(_growthPanel);
 
-    _manualAddPanel = new SegmentationManualAddPanel(QStringLiteral("segmentation_edit"), this);
-    layout->addWidget(_manualAddPanel);
+    auto* refineSection = new CollapsibleSection(tr("Refine"), this, true);
+    _manualAddPanel = new SegmentationManualAddPanel(QStringLiteral("segmentation_edit"), refineSection);
+    _editingPanel = new SegmentationEditingPanel(QStringLiteral("segmentation_edit"), refineSection);
+    _correctionsPanel = new SegmentationCorrectionsPanel(QStringLiteral("segmentation_edit"), refineSection);
+    refineSection->contentLayout()->addWidget(_manualAddPanel);
+    refineSection->contentLayout()->addWidget(_editingPanel);
+    refineSection->contentLayout()->addWidget(_correctionsPanel);
 
-    _editingPanel = new SegmentationEditingPanel(QStringLiteral("segmentation_edit"), this);
-    layout->addWidget(_editingPanel);
-
-    _approvalMaskPanel = new SegmentationApprovalMaskPanel(QStringLiteral("segmentation_edit"), this);
-    layout->addWidget(_approvalMaskPanel);
-
-    _directionFieldPanel = new SegmentationDirectionFieldPanel(QStringLiteral("segmentation_edit"), this);
-    layout->addWidget(_directionFieldPanel);
-
-    _neuralTracerPanel = new SegmentationNeuralTracerPanel(QStringLiteral("segmentation_edit"), this);
-    layout->addWidget(_neuralTracerPanel);
+    auto* advancedSection = new CollapsibleSection(tr("Advanced"), this, false);
+    _approvalMaskPanel = new SegmentationApprovalMaskPanel(QStringLiteral("segmentation_edit"), advancedSection);
+    _directionFieldPanel = new SegmentationDirectionFieldPanel(QStringLiteral("segmentation_edit"), advancedSection);
+    _neuralTracerPanel = new SegmentationNeuralTracerPanel(QStringLiteral("segmentation_edit"), advancedSection);
+    _customParamsPanel = new SegmentationCustomParamsPanel(QStringLiteral("segmentation_edit"), advancedSection);
+    advancedSection->contentLayout()->addWidget(_approvalMaskPanel);
+    advancedSection->contentLayout()->addWidget(_directionFieldPanel);
+    advancedSection->contentLayout()->addWidget(_neuralTracerPanel);
+    advancedSection->contentLayout()->addWidget(_customParamsPanel);
 
     _lasagnaPanel = new SegmentationLasagnaPanel(QStringLiteral("segmentation_edit"), this);
     _lasagnaPanel->setVisible(false);  // Not in layout; hosted in a separate dock when available
 
-    _correctionsPanel = new SegmentationCorrectionsPanel(QStringLiteral("segmentation_edit"), this);
-    layout->addWidget(_correctionsPanel);
-
-    _customParamsPanel = new SegmentationCustomParamsPanel(QStringLiteral("segmentation_edit"), this);
-    layout->addWidget(_customParamsPanel);
-
+    layout->addWidget(growSection);
+    layout->addWidget(refineSection);
+    layout->addWidget(advancedSection);
     layout->addStretch(1);
 
     connect(_headerRow, &SegmentationHeaderRow::editingToggled, this, [this](bool enabled) {
