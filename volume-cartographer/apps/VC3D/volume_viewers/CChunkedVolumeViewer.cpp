@@ -665,6 +665,13 @@ CChunkedVolumeViewer::CChunkedVolumeViewer(CState* state, ViewerManager* manager
 
     _statsBar = new ViewerStatsBar(this);
     _statsBar->move(10, 5);
+
+    // Minimal empty state: shown when no volume is loaded.
+    _emptyStateLabel = new QLabel(this);
+    _emptyStateLabel->setProperty("emptyState", true);
+    _emptyStateLabel->setText(tr("No volume loaded\nOpen a project to begin"));
+    _emptyStateLabel->setAlignment(Qt::AlignCenter);
+    _emptyStateLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
     _statsBarRight = new ViewerStatsBar(this);
     _statsBarRight->setMinimumWidth(0);
     _statsBarRight->hide();
@@ -721,6 +728,10 @@ void CChunkedVolumeViewer::resizeEvent(QResizeEvent* event)
 {
     QWidget::resizeEvent(event);
     repositionStatsBarRight();
+    if (_emptyStateLabel && _emptyStateLabel->isVisible()) {
+        _emptyStateLabel->move((width() - _emptyStateLabel->width()) / 2,
+                               (height() - _emptyStateLabel->height()) / 2);
+    }
 }
 
 void CChunkedVolumeViewer::repositionStatsBarRight()
@@ -1238,6 +1249,15 @@ void CChunkedVolumeViewer::OnVolumeChanged(std::shared_ptr<Volume> vol)
         // No volume means submitRender() below will skip; drop the previous
         // volume's framebuffer so the view goes blank instead of showing it.
         clearDisplayedFramebuffer();
+    }
+    if (_emptyStateLabel) {
+        _emptyStateLabel->setVisible(!_volume);
+        if (_volume == nullptr) {
+            _emptyStateLabel->resize(_emptyStateLabel->sizeHint());
+            _emptyStateLabel->move((width() - _emptyStateLabel->width()) / 2,
+                                   (height() - _emptyStateLabel->height()) / 2);
+            _emptyStateLabel->raise();
+        }
     }
     ensureDefaultSurface();
     if (_volume && isAxisAlignedView() && !hadVolume) {

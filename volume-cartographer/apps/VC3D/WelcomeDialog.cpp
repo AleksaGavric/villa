@@ -2,7 +2,9 @@
 
 #include "WelcomeDialog.hpp"
 
+#include <QEasingCurve>
 #include <QFileInfo>
+#include <QPropertyAnimation>
 #include <QHBoxLayout>
 #include <QIcon>
 #include <QLabel>
@@ -99,6 +101,15 @@ WelcomeDialog::WelcomeDialog(CWindow* window, QWidget* parent)
 
     // Both click and double-click/Enter open immediately; a single click is
     // the common case on a welcome screen.
+
+    // Subtle Apple-like entrance: fade + rise.
+    setWindowOpacity(0.0);
+    auto* fade = new QPropertyAnimation(this, "windowOpacity", this);
+    fade->setDuration(320);
+    fade->setStartValue(0.0);
+    fade->setEndValue(1.0);
+    fade->setEasingCurve(QEasingCurve::OutCubic);
+    fade->start(QPropertyAnimation::DeleteWhenStopped);
 }
 
 void WelcomeDialog::openRecent(const QString& path)

@@ -470,3 +470,19 @@ QToolButton[sectionHeader="true"]:checked {
     border-color: #0A84FF;
     color: #FFFFFF;
 }
+
+/* ---------- viewer floating chrome ---------- */
+ViewerStatsBar {
+    background-color: rgba(28, 28, 30, 0.85);
+    color: #98989F;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 6px 12px;
+    font-size: 11px;
+}
+QLabel[emptyState="true"] {
+    color: #636366;
+    font-size: 14px;
+    background: transparent;
+    padding: 20px;
+}

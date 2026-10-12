@@ -2,6 +2,7 @@
 
 #include <QElapsedTimer>
 #include <QImage>
+#include <QLabel>
 #include <QPointF>
 #include <QPointer>
 #include <QStringList>
@@ -524,6 +525,7 @@ private:
     QGraphicsScene* _scene = nullptr;
     ViewerStatsBar* _statsBar = nullptr;
     ViewerStatsBar* _statsBarRight = nullptr;
+    QLabel* _emptyStateLabel = nullptr;
     // Shared cache/scheduler statistics are refreshed at most every 250 ms:
     // updateStatusLabel runs per mouse move and ChunkCache::stats() takes the
     // cache-state and scheduler mutexes that every fetch/decode worker hammers

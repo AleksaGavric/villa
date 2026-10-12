@@ -6,6 +6,7 @@
 
 #include <QWidget>
 
+class QPropertyAnimation;
 class QToolButton;
 class QVBoxLayout;
 
@@ -28,6 +29,7 @@ private:
     QToolButton* _toggle{nullptr};
     QWidget* _content{nullptr};
     QVBoxLayout* _contentLayout{nullptr};
+    QPropertyAnimation* _anim{nullptr};
     QString _title;
     bool _expanded;
 };
