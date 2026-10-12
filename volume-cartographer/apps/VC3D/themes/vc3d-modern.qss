@@ -511,3 +511,28 @@ QToolBar#panelSidebar QToolButton:checked {
     background-color: rgba(10, 132, 255, 0.2);
     color: #0A84FF;
 }
+
+/* ---------- workspace switcher (replaces tab bar) ---------- */
+QComboBox#workspaceSwitcher {
+    background-color: #2C2C2E;
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 13px;
+    min-width: 140px;
+}
+QComboBox#workspaceSwitcher:hover {
+    background-color: #3A3A3C;
+}
+QComboBox#workspaceSwitcher::drop-down {
+    border: none;
+    width: 20px;
+}
+QComboBox#workspaceSwitcher QAbstractItemView {
+    background-color: #2C2C2E;
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    selection-background-color: #0A84FF;
+}

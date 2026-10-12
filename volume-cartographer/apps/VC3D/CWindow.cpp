@@ -2512,6 +2512,27 @@ CWindow::CWindow(size_t cacheSizeGB, RenderBenchOptions benchOptions) :
         for (int i = 0; i < _workspaceTabs->count(); ++i) {
             tabBar->setTabButton(i, QTabBar::RightSide, nullptr);
         }
+        // Apple-like: hide the tab bar; workspaces switch via dropdown.
+        tabBar->hide();
+    }
+    // Workspace switcher: minimal dropdown instead of 7 tabs.
+    {
+        auto* wsCombo = new QComboBox(_workspaceTabs);
+        wsCombo->setObjectName(QStringLiteral("workspaceSwitcher"));
+        for (int i = 0; i < _workspaceTabs->count(); ++i) {
+            wsCombo->addItem(_workspaceTabs->tabText(i));
+        }
+        wsCombo->setCurrentIndex(_workspaceTabs->currentIndex());
+        wsCombo->setToolTip(tr("Switch workspace"));
+        connect(wsCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
+                this, [this](int idx) { _workspaceTabs->setCurrentIndex(idx); });
+        connect(_workspaceTabs, &QTabWidget::currentChanged,
+                wsCombo, [wsCombo](int idx) {
+                    wsCombo->blockSignals(true);
+                    wsCombo->setCurrentIndex(idx);
+                    wsCombo->blockSignals(false);
+                });
+        _workspaceSwitcherCombo = wsCombo;
     }
     auto* workspaceContainer = new QWidget(this);
     workspaceContainer->setObjectName(QStringLiteral("workspaceContainer"));
@@ -2535,6 +2556,21 @@ CWindow::CWindow(size_t cacheSizeGB, RenderBenchOptions benchOptions) :
             _persistentCacheWarningBanner, &QWidget::hide);
     _persistentCacheWarningBanner->hide();
     workspaceLayout->addWidget(_persistentCacheWarningBanner);
+    // Minimal top bar: workspace switcher on the left
+    {
+        auto* topBar = new QWidget(workspaceContainer);
+        topBar->setObjectName(QStringLiteral("workspaceTopBar"));
+        auto* topLayout = new QHBoxLayout(topBar);
+        topLayout->setContentsMargins(8, 4, 8, 4);
+        topLayout->setSpacing(8);
+        topLayout->addWidget(_workspaceSwitcherCombo);
+        topLayout->addStretch(1);
+        // Move project name label here too (was in tab corner)
+        if (_projectNameLabel) {
+            topLayout->addWidget(_projectNameLabel);
+        }
+        workspaceLayout->addWidget(topBar);
+    }
     workspaceLayout->addWidget(_workspaceTabs, 1);
     setCentralWidget(workspaceContainer);
     connect(_workspaceTabs, &QTabWidget::currentChanged, this, [this]() {

@@ -115,6 +115,7 @@ class QMainWindow;
 class QMenu;
 class QSpinBox;
 class QStandardItemModel;
+class QComboBox;
 class QTabWidget;
 class QFrame;
 class FileWatcherService;
@@ -446,6 +447,7 @@ private:
     bool _destroyingWindow{false};
     bool _spiralCloseGuardBypass{false};
     QTabWidget* _workspaceTabs{nullptr};
+    QComboBox* _workspaceSwitcherCombo{nullptr};
     QLabel* _projectNameLabel{nullptr};
     QMainWindow* _segmentWorkspaceWindow{nullptr};
     StatusDockPanelHost* _statusDockPanelHost{nullptr};
