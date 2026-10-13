@@ -66,6 +66,7 @@
 #include <QRegularExpressionValidator>
 #include <QDockWidget>
 #include <QToolBar>
+#include <QToolButton>
 #include <QLabel>
 #include <QLineEdit>
 #include <QDoubleSpinBox>
@@ -11533,5 +11534,68 @@ void CWindow::setupPanelSidebar()
     addPanelButton(tr("Segment"), ui.dockWidgetSegmentation);
     addPanelButton(tr("View"), ui.dockWidgetViewerControls);
     addPanelButton(tr("Display"), ui.dockWidgetView);
+
+    // --- Key features: Ink and Unwrap get prominent accent buttons ---
+    sidebar->addSeparator();
+
+    // Ink: toggles the Ink Detection panel
+    {
+        auto* inkAct = new QAction(tr("Ink"), this);
+        inkAct->setCheckable(true);
+        inkAct->setToolTip(tr("Show ink detection"));
+        if (_inkDetectionDock) {
+            inkAct->setChecked(_inkDetectionDock->isVisible());
+            connect(inkAct, &QAction::toggled, this, [this](bool on) {
+                if (!_inkDetectionDock) return;
+                if (on) {
+                    addDockWidget(Qt::RightDockWidgetArea, _inkDetectionDock);
+                    _inkDetectionDock->setFloating(false);
+                }
+                _inkDetectionDock->setVisible(on);
+                if (on) _inkDetectionDock->raise();
+            });
+            connect(_inkDetectionDock, &QDockWidget::visibilityChanged,
+                    inkAct, [inkAct](bool vis) {
+                        inkAct->blockSignals(true);
+                        inkAct->setChecked(vis);
+                        inkAct->blockSignals(false);
+                    });
+        } else {
+            inkAct->setEnabled(false);
+        }
+        sidebar->addAction(inkAct);
+        if (auto* btn = qobject_cast<QToolButton*>(sidebar->widgetForAction(inkAct))) {
+            btn->setProperty("accent", true);
+        }
+    }
+
+    // Unwrap: switches to the Lasagna (unwrapping) workspace
+    {
+        auto* unwrapAct = new QAction(tr("Unwrap"), this);
+        unwrapAct->setCheckable(true);
+        unwrapAct->setToolTip(tr("Show unwrapped view (Lasagna)"));
+        connect(unwrapAct, &QAction::toggled, this, [this, unwrapAct](bool on) {
+            if (on) {
+                switchToLasagnaWorkspace();
+            } else {
+                switchToMainWorkspace();
+            }
+            // Sync with actual workspace changes
+        });
+        // Update checked state when workspace changes
+        connect(_workspaceTabs, &QTabWidget::currentChanged, this,
+                [this, unwrapAct]() {
+                    const bool isLasagna = _workspaceTabs &&
+                        _workspaceTabs->currentWidget() == _lasagnaWorkspaceWindow;
+                    unwrapAct->blockSignals(true);
+                    unwrapAct->setChecked(isLasagna);
+                    unwrapAct->blockSignals(false);
+                });
+        sidebar->addAction(unwrapAct);
+        if (auto* btn = qobject_cast<QToolButton*>(sidebar->widgetForAction(unwrapAct))) {
+            btn->setProperty("accent", true);
+        }
+    }
+
     addToolBar(Qt::LeftToolBarArea, sidebar);
 }

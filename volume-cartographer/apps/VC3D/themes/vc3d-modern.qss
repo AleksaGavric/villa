@@ -536,3 +536,37 @@ QComboBox#workspaceSwitcher QAbstractItemView {
     border-radius: 8px;
     selection-background-color: #0A84FF;
 }
+
+/* ---------- accent sidebar buttons (Ink, Unwrap) ---------- */
+QToolBar#panelSidebar QToolButton[accent="true"] {
+    background-color: rgba(10, 132, 255, 0.15);
+    color: #0A84FF;
+    border: 1px solid rgba(10, 132, 255, 0.3);
+    font-weight: 600;
+}
+QToolBar#panelSidebar QToolButton[accent="true"]:hover {
+    background-color: rgba(10, 132, 255, 0.25);
+    color: #409CFF;
+}
+QToolBar#panelSidebar QToolButton[accent="true"]:checked {
+    background-color: #0A84FF;
+    color: #FFFFFF;
+    border: 1px solid #0A84FF;
+}
+
+/* ---------- techy details: monospace for stats ---------- */
+ViewerStatsBar {
+    font-family: "SF Mono", "Menlo", "Consolas", monospace;
+    font-size: 11px;
+    letter-spacing: 0.3px;
+}
+
+/* ---------- tighter, more precise spacing ---------- */
+QDockWidget::title {
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #98989F;
+}
