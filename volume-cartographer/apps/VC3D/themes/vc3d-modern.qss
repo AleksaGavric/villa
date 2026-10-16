@@ -77,8 +77,9 @@ QDockWidget {
 QDockWidget::title {
     background-color: #242426;
     color: #98989F;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
+    letter-spacing: 0.5px;
     padding: 8px 12px 6px 12px;
     border-bottom: 1px solid #2C2C2E;
     text-align: left;
@@ -479,6 +480,8 @@ ViewerStatsBar {
     border-radius: 12px;
     padding: 6px 12px;
     font-size: 11px;
+    font-family: "SF Mono", "Menlo", "Consolas", monospace;
+    letter-spacing: 0.3px;
 }
 QLabel[emptyState="true"] {
     color: #636366;
@@ -554,19 +557,4 @@ QToolBar#panelSidebar QToolButton[accent="true"]:checked {
     border: 1px solid #0A84FF;
 }
 
-/* ---------- techy details: monospace for stats ---------- */
-ViewerStatsBar {
-    font-family: "SF Mono", "Menlo", "Consolas", monospace;
-    font-size: 11px;
-    letter-spacing: 0.3px;
-}
-
-/* ---------- tighter, more precise spacing ---------- */
-QDockWidget::title {
-    padding: 8px 12px;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    color: #98989F;
-}
+/* end of theme */
