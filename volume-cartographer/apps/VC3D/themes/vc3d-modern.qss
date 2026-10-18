@@ -79,7 +79,6 @@ QDockWidget::title {
     color: #98989F;
     font-size: 12px;
     font-weight: 600;
-    letter-spacing: 0.5px;
     padding: 8px 12px 6px 12px;
     border-bottom: 1px solid #2C2C2E;
     text-align: left;
@@ -289,8 +288,15 @@ QSlider::sub-page:vertical {
     border-radius: 2px;
     margin: 8px 0;
 }
-QSlider:disabled {
-    opacity: 0.4;
+/* Qt stylesheets ignore `opacity`; dim disabled sliders explicitly. */
+QSlider::groove:horizontal:disabled, QSlider::groove:vertical:disabled {
+    background-color: #2C2C2E;
+}
+QSlider::handle:horizontal:disabled, QSlider::handle:vertical:disabled {
+    background-color: #48484A;
+}
+QSlider::sub-page:horizontal:disabled, QSlider::sub-page:vertical:disabled {
+    background-color: #2C2C2E;
 }
 
 /* ---------- scroll bars (thin, overlay-like) ---------- */
@@ -481,7 +487,6 @@ ViewerStatsBar {
     padding: 6px 12px;
     font-size: 11px;
     font-family: "SF Mono", "Menlo", "Consolas", monospace;
-    letter-spacing: 0.3px;
 }
 QLabel[emptyState="true"] {
     color: #636366;

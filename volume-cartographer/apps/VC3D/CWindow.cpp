@@ -2322,37 +2322,7 @@ float signedAngleBetween(const cv::Vec3f& from, const cv::Vec3f& to, const cv::V
 
 } // namespace
 
-// Dark mode detection - works on all Qt 6.x versions
-static bool isDarkMode() {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
-    if (QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark)
-        return true;
-#endif
-    // Fallback: check system palette brightness
-    const auto windowColor = QGuiApplication::palette().color(QPalette::Window);
-    return windowColor.lightness() < 128;
-}
-
-// Apply a consistent dark palette application-wide
-static void applyDarkPalette() {
-    QPalette p;
-    p.setColor(QPalette::Window, QColor(53, 53, 53));
-    p.setColor(QPalette::WindowText, Qt::white);
-    p.setColor(QPalette::Base, QColor(42, 42, 42));
-    p.setColor(QPalette::AlternateBase, QColor(66, 66, 66));
-    p.setColor(QPalette::ToolTipBase, QColor(53, 53, 53));
-    p.setColor(QPalette::ToolTipText, Qt::white);
-    p.setColor(QPalette::Text, Qt::white);
-    p.setColor(QPalette::Button, QColor(53, 53, 53));
-    p.setColor(QPalette::ButtonText, Qt::white);
-    p.setColor(QPalette::BrightText, Qt::red);
-    p.setColor(QPalette::Link, QColor(42, 130, 218));
-    p.setColor(QPalette::Highlight, QColor(42, 130, 218));
-    p.setColor(QPalette::HighlightedText, Qt::black);
-    p.setColor(QPalette::Disabled, QPalette::Text, QColor(127, 127, 127));
-    p.setColor(QPalette::Disabled, QPalette::ButtonText, QColor(127, 127, 127));
-    QApplication::setPalette(p);
-}
+// Window-state persistence helpers
 
 static QString windowStateScreenSignature()
 {
@@ -3011,11 +2981,8 @@ CWindow::CWindow(size_t cacheSizeGB, RenderBenchOptions benchOptions) :
         }
     });
 
-    // The application-wide dark theme (vc3d-modern.qss) handles all styling.
-    // Do not override it with per-window stylesheets.
-    if (isDarkMode()) {
-        applyDarkPalette();
-    }
+    // The application-wide dark theme (vc3d-modern.qss) handles all styling;
+    // no per-window palette overrides — the QSS base rule covers every widget.
 
     // Restore geometry / sizes
     QSettings geometry(vc3d::settingsFilePath(), QSettings::IniFormat);
