@@ -83,7 +83,9 @@ void CollapsibleSection::setExpanded(bool expanded)
 
 void CollapsibleSection::updateToggleText()
 {
-    // Chevron indicates state; no icon files needed.
-    _toggle->setText((_expanded ? QStringLiteral("▼ ") : QStringLiteral("▶ ")) + _title);
+    // Chevron indicates state; no icon files needed. The arrow is drawn by
+    // setArrowType below, so the title carries no text chevron of its own
+    // (a "▼ " prefix here would render a doubled chevron).
+    _toggle->setText(_title);
     _toggle->setArrowType(_expanded ? Qt::DownArrow : Qt::RightArrow);
 }
