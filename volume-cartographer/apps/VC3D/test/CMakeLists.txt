@@ -1,5 +1,7 @@
 find_package(Qt6 REQUIRED COMPONENTS Concurrent Core Network Test Widgets)
 
+add_subdirectory(ui)
+
 add_executable(test_catalog_project_dialog
     test_catalog_project_dialog.cpp
     ../OpenDataCatalogWindow.cpp

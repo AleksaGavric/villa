@@ -55,6 +55,22 @@ const ShortcutDef OpenVolpkg{
     nullptr,
     QKeySequence::Open
 };
+const ShortcutDef SearchCommands{
+    "search_commands",
+    kSectionViewMenu,
+    "Search commands",
+    ShortcutKind::Text,
+    "Ctrl+K",
+    QKeySequence::Open
+};
+const ShortcutDef SearchCommandsAlternate{
+    "search_commands_alternate",
+    kSectionViewMenu,
+    "Search commands (alternate)",
+    ShortcutKind::Text,
+    "Ctrl+Shift+P",
+    QKeySequence::Open
+};
 const ShortcutDef AxisAlignedSlices{
     "axis_aligned_slices",
     kSectionViewMenu,
@@ -498,6 +514,8 @@ QString buildKeybindsHelpText()
 {
     const HelpEntry kHelpEntries[] = {
         { kSectionFileMenu, shortcuts::OpenVolpkg.description, HelpKeyType::Shortcut, &shortcuts::OpenVolpkg, nullptr, nullptr },
+        { kSectionViewMenu, shortcuts::SearchCommands.description, HelpKeyType::Shortcut, &shortcuts::SearchCommands, nullptr, nullptr },
+        { kSectionViewMenu, shortcuts::SearchCommandsAlternate.description, HelpKeyType::Shortcut, &shortcuts::SearchCommandsAlternate, nullptr, nullptr },
         { kSectionViewMenu, shortcuts::AxisAlignedSlices.description, HelpKeyType::Shortcut, &shortcuts::AxisAlignedSlices, nullptr, nullptr },
         { kSectionViewMenu, shortcuts::SurfaceNormals.description, HelpKeyType::Shortcut, &shortcuts::SurfaceNormals, nullptr, nullptr },
         { kSectionViewMenu, shortcuts::DirectionHints.description, HelpKeyType::Shortcut, &shortcuts::DirectionHints, nullptr, nullptr },

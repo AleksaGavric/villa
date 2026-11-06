@@ -98,6 +98,17 @@ The document below is a basic introduction to the ui and keybindings available i
 
 ### Launching VC3D
 
+The desktop workspace uses a GitHub Copilot-inspired dark interface: an activity
+rail on the left, workspace selection and command search at the top, and tool
+inspectors on the right. The Project, Segment, View, Display, Ink, and Unwrap
+buttons retain their existing panel and workspace actions.
+
+Click **Search commands** or press **Ctrl+K** / **Ctrl+Shift+P** (**Cmd** instead of
+**Ctrl** on macOS) to search the current menus and activity rail. Type words from
+a command or menu name, use **Up/Down** to select, and press **Enter** to run it.
+**Esc** dismisses the search without changing the workspace. Unavailable commands
+are omitted. This is a local command launcher, not an AI chat integration.
+
 If you're using docker : 
 
 ```bash
@@ -116,6 +127,19 @@ From source :
 ```bash
 /path/to/build/bin/VC3D
 ```
+
+The UI regression tests can run without the volume-processing dependencies,
+using CMake 3.28+, a C++17 compiler, and Qt 6 Widgets/Test:
+
+```bash
+cmake -S apps/VC3D/test/ui -B build/ui-tests -GNinja
+cmake --build build/ui-tests
+ctest --test-dir build/ui-tests --output-on-failure
+```
+
+These headless tests cover command discovery, filtering, keyboard and mouse
+activation, stale actions, the dark palette, and activity icons. They do not
+replace testing the full application on real scroll data.
 
 ![vc3d initial ui](docs/imgs/vc3d_ui_initial.png)
 

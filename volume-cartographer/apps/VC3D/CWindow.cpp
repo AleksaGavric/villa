@@ -1,4 +1,6 @@
 #include "CWindow.hpp"
+#include "CommandPalette.hpp"
+#include "elements/ActivityIcon.hpp"
 #include "FiberLengthDisplay.hpp"
 #include "VolumeDisplayNames.hpp"
 #include "OpenDataCoordinateIdentity.hpp"
@@ -2483,7 +2485,7 @@ CWindow::CWindow(size_t cacheSizeGB, RenderBenchOptions benchOptions) :
         for (int i = 0; i < _workspaceTabs->count(); ++i) {
             tabBar->setTabButton(i, QTabBar::RightSide, nullptr);
         }
-        // Apple-like: hide the tab bar; workspaces switch via dropdown.
+        // Workspaces switch via the dropdown.
         tabBar->hide();
     }
     // Workspace switcher: minimal dropdown instead of 7 tabs.
@@ -2527,7 +2529,6 @@ CWindow::CWindow(size_t cacheSizeGB, RenderBenchOptions benchOptions) :
             _persistentCacheWarningBanner, &QWidget::hide);
     _persistentCacheWarningBanner->hide();
     workspaceLayout->addWidget(_persistentCacheWarningBanner);
-    // Minimal top bar: workspace switcher on the left
     {
         auto* topBar = new QWidget(workspaceContainer);
         topBar->setObjectName(QStringLiteral("workspaceTopBar"));
@@ -2535,6 +2536,8 @@ CWindow::CWindow(size_t cacheSizeGB, RenderBenchOptions benchOptions) :
         topLayout->setContentsMargins(8, 4, 8, 4);
         topLayout->setSpacing(8);
         topLayout->addWidget(_workspaceSwitcherCombo);
+        topLayout->addStretch(1);
+        topLayout->addWidget(CommandPalette::createLauncher(this, topBar), 1);
         topLayout->addStretch(1);
         // Move project name label here too (was in tab corner)
         if (_projectNameLabel) {
@@ -2981,8 +2984,7 @@ CWindow::CWindow(size_t cacheSizeGB, RenderBenchOptions benchOptions) :
         }
     });
 
-    // The application-wide dark theme (vc3d-modern.qss) handles all styling;
-    // no per-window palette overrides — the QSS base rule covers every widget.
+    // AppTheme owns the application palette and stylesheet.
 
     // Restore geometry / sizes
     QSettings geometry(vc3d::settingsFilePath(), QSettings::IniFormat);
@@ -11471,16 +11473,17 @@ void CWindow::setupPanelSidebar()
     sidebar->setIconSize(QSize(24, 24));
     sidebar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-    auto addPanelButton = [this, sidebar](const QString& label, QDockWidget* dock) {
+    auto addPanelButton = [this, sidebar](const QString& label, QDockWidget* dock,
+                                         vc3d::ActivityIcon icon) {
         if (!dock) {
             return;
         }
-        auto* act = new QAction(label, this);
+        auto* act = new QAction(vc3d::activityIcon(icon), label, this);
+        act->setToolTip(tr("Toggle %1 panel").arg(label));
         act->setCheckable(true);
         act->setChecked(dock->isVisible());
         connect(act, &QAction::toggled, this, [this, dock](bool on) {
             if (on) {
-                // Dock to the right as an inspector panel (Apple-like)
                 addDockWidget(Qt::RightDockWidgetArea, dock);
                 dock->setFloating(false);
             }
@@ -11497,17 +11500,17 @@ void CWindow::setupPanelSidebar()
         sidebar->addAction(act);
     };
 
-    addPanelButton(tr("Project"), ui.dockWidgetVolumes);
-    addPanelButton(tr("Segment"), ui.dockWidgetSegmentation);
-    addPanelButton(tr("View"), ui.dockWidgetViewerControls);
-    addPanelButton(tr("Display"), ui.dockWidgetView);
+    addPanelButton(tr("Project"), ui.dockWidgetVolumes, vc3d::ActivityIcon::Project);
+    addPanelButton(tr("Segment"), ui.dockWidgetSegmentation, vc3d::ActivityIcon::Segment);
+    addPanelButton(tr("View"), ui.dockWidgetViewerControls, vc3d::ActivityIcon::View);
+    addPanelButton(tr("Display"), ui.dockWidgetView, vc3d::ActivityIcon::Display);
 
     // --- Key features: Ink and Unwrap get prominent accent buttons ---
     sidebar->addSeparator();
 
     // Ink: toggles the Ink Detection panel
     {
-        auto* inkAct = new QAction(tr("Ink"), this);
+        auto* inkAct = new QAction(vc3d::activityIcon(vc3d::ActivityIcon::Ink), tr("Ink"), this);
         inkAct->setCheckable(true);
         inkAct->setToolTip(tr("Show ink detection"));
         if (_inkDetectionDock) {
@@ -11538,7 +11541,7 @@ void CWindow::setupPanelSidebar()
 
     // Unwrap: switches to the Lasagna (unwrapping) workspace
     {
-        auto* unwrapAct = new QAction(tr("Unwrap"), this);
+        auto* unwrapAct = new QAction(vc3d::activityIcon(vc3d::ActivityIcon::Unwrap), tr("Unwrap"), this);
         unwrapAct->setCheckable(true);
         unwrapAct->setToolTip(tr("Show unwrapped view (Lasagna)"));
         connect(unwrapAct, &QAction::toggled, this, [this, unwrapAct](bool on) {

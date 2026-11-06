@@ -10,10 +10,10 @@
 #include <QCommandLineParser>
 #include <QComboBox>
 #include <QEvent>
-#include <QFile>
 #include <QImageReader>
 
 #include "CWindow.hpp"
+#include "AppTheme.hpp"
 #include "WelcomeDialog.hpp"
 #include "agent_bridge/AgentBridgeServer.hpp"
 #include "VCSettings.hpp"
@@ -336,15 +336,7 @@ auto main(int argc, char* argv[]) -> int
     QApplication::setWindowIcon(QIcon(":/images/logo.png"));
     QApplication::setApplicationVersion(QString::fromStdString(ProjectInfo::VersionString()));
 
-    // Modern theme, applied once application-wide. If the resource is
-    // missing (e.g. a partial build), fall back to the platform style
-    // silently rather than breaking startup.
-    {
-        QFile themeFile(QStringLiteral(":/themes/vc3d-modern.qss"));
-        if (themeFile.open(QIODevice::ReadOnly)) {
-            app.setStyleSheet(QString::fromUtf8(themeFile.readAll()));
-        }
-    }
+    vc3d::applyAppTheme(app);
 
     // Handle this before constructing the main window. QCommandLineParser's
     // built-in version option normally exits from process(), but keeping the

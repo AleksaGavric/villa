@@ -10,6 +10,11 @@ set(srcs
     ${CMAKE_SOURCE_DIR}/core/src/VCCollection.cpp
     ${vccollection_moc}
     VCAppMain.cpp
+    AppTheme.cpp
+    AppTheme.hpp
+    CommandPalette.cpp
+    CommandPalette.hpp
+    elements/ActivityIcon.hpp
     CState.cpp
     CState.hpp
     Keybinds.cpp

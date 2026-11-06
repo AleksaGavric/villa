@@ -21,7 +21,8 @@ WelcomeDialog::WelcomeDialog(CWindow* window, QWidget* parent)
     , _window(window)
 {
     setWindowTitle(tr("Welcome to VC3D"));
-    setMinimumSize(460, 520);
+    setObjectName(QStringLiteral("welcomeDialog"));
+    setMinimumSize(520, 600);
     setModal(true);
 
     auto* layout = new QVBoxLayout(this);
@@ -30,19 +31,25 @@ WelcomeDialog::WelcomeDialog(CWindow* window, QWidget* parent)
 
     auto* logoLabel = new QLabel(this);
     const QIcon logo(QStringLiteral(":/images/logo.png"));
-    logoLabel->setPixmap(logo.pixmap(72, 72));
+    logoLabel->setPixmap(logo.pixmap(48, 48));
     logoLabel->setAlignment(Qt::AlignCenter);
     layout->addWidget(logoLabel);
 
-    auto* title = new QLabel(tr("VC3D"), this);
+    auto* brand = new QLabel(tr("VC3D / Vesuvius Challenge"), this);
+    brand->setProperty("secondary", true);
+    brand->setAlignment(Qt::AlignCenter);
+    layout->addWidget(brand);
+
+    auto* title = new QLabel(tr("What will you uncover?"), this);
+    title->setObjectName(QStringLiteral("welcomeTitle"));
     title->setAlignment(Qt::AlignCenter);
     QFont titleFont = title->font();
-    titleFont.setPointSize(28);
+    titleFont.setPointSize(24);
     titleFont.setWeight(QFont::DemiBold);
     title->setFont(titleFont);
     layout->addWidget(title);
 
-    auto* subtitle = new QLabel(tr("Volumetric segmentation for the Vesuvius Challenge"), this);
+    auto* subtitle = new QLabel(tr("Explore a scroll. Trace a surface. Bring ancient words to light."), this);
     subtitle->setProperty("secondary", true);
     subtitle->setAlignment(Qt::AlignCenter);
     subtitle->setWordWrap(true);
@@ -84,6 +91,7 @@ WelcomeDialog::WelcomeDialog(CWindow* window, QWidget* parent)
     layout->addWidget(recentLabel);
 
     auto* recentList = new QListWidget(this);
+    recentList->setObjectName(QStringLiteral("recentProjects"));
     recentList->setMinimumHeight(160);
     QSettings settings(vc3d::settingsFilePath(), QSettings::IniFormat);
     const QStringList recent =
@@ -110,10 +118,9 @@ WelcomeDialog::WelcomeDialog(CWindow* window, QWidget* parent)
     // Both click and double-click/Enter open immediately; a single click is
     // the common case on a welcome screen.
 
-    // Subtle Apple-like entrance: fade + rise.
     setWindowOpacity(0.0);
     auto* fade = new QPropertyAnimation(this, "windowOpacity", this);
-    fade->setDuration(320);
+    fade->setDuration(180);
     fade->setStartValue(0.0);
     fade->setEndValue(1.0);
     fade->setEasingCurve(QEasingCurve::OutCubic);
